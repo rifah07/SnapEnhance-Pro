@@ -1,8 +1,14 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 import os
-from .utils.effects import process_image
+from backend.app.utils.effects import process_image
 
-bp = Blueprint('api', __name__)
+bp = Blueprint('api', __name__)  # Blueprint definition
+
+# Constants
+UPLOAD_FOLDER = "uploads"
+PROCESSED_FOLDER = "processed"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
 @bp.route("/upload", methods=["POST"])
 def upload():
@@ -12,10 +18,8 @@ def upload():
     file = request.files['image']
     effect = request.form.get("effect", "grayscale")
     
-    # Save original
-    upload_path = "uploads"
-    os.makedirs(upload_path, exist_ok=True)
-    file_path = os.path.join(upload_path, file.filename)
+    # Save original file
+    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(file_path)
     
     # Process image
@@ -25,6 +29,10 @@ def upload():
         "processed_image": f"/processed/{os.path.basename(output_path)}"
     })
 
+@bp.route("/processed/<filename>")
+def get_processed_image(filename):
+    return send_from_directory(PROCESSED_FOLDER, filename)
+
 @bp.route("/")
 def home():
-    return jsonify({"status": "SnapEnhance API"})
+    return jsonify({"status": "API Ready"})

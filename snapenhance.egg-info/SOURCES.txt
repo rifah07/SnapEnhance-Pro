@@ -1,0 +1,7 @@
+README.md
+setup.py
+snapenhance.egg-info/PKG-INFO
+snapenhance.egg-info/SOURCES.txt
+snapenhance.egg-info/dependency_links.txt
+snapenhance.egg-info/requires.txt
+snapenhance.egg-info/top_level.txt
