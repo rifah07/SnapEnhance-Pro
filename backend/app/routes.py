@@ -1,8 +1,9 @@
 from flask import Blueprint, request, jsonify, send_from_directory
 import os
 from backend.app.utils.effects import process_image
+from backend.db import log_image_processing, get_processing_history
 
-bp = Blueprint('api', __name__)  # Blueprint definition
+bp = Blueprint('api', __name__)
 
 # Constants
 UPLOAD_FOLDER = "uploads"
@@ -25,14 +26,30 @@ def upload():
     # Process image
     output_path = process_image(file_path, effect)
     
+    # Log to MongoDB
+    log_image_processing(file_path, output_path, effect)
+    
     return jsonify({
-        "processed_image": f"/processed/{os.path.basename(output_path)}"
+        "processed_image": f"/processed/{os.path.basename(output_path)}",
+        "effect": effect
     })
 
 @bp.route("/processed/<filename>")
 def get_processed_image(filename):
     return send_from_directory(PROCESSED_FOLDER, filename)
 
+@bp.route("/history", methods=["GET"])
+def get_history():
+    history = get_processing_history()
+    return jsonify(history)
+
 @bp.route("/")
 def home():
-    return jsonify({"status": "API Ready"})
+    return jsonify({
+        "status": "API Ready",
+        "endpoints": {
+            "upload": "POST /upload",
+            "history": "GET /history",
+            "processed": "GET /processed/<filename>"
+        }
+    })
