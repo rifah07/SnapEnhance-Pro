@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.env
+venv/
+
+# MongoDB
+/data/
+
+# IDE
+.vscode/
+.idea/
+
+# Static files
+static/uploads/*
+static/processed/*
+!static/uploads/.gitkeep
+!static/processed/.gitkeep
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# Docker
+docker-compose.override.yml
