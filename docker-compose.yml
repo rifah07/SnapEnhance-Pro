@@ -6,20 +6,21 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - MONGO_URI=mongodb://mongodb:27017
-      - SECRET_KEY=your-secret-key-here
-    depends_on:
-      - mongodb
+      - MONGO_URI=${MONGO_URI}
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
     volumes:
-      - ./backend/app:/app/app
       - ./backend/static:/app/static
+    restart: unless-stopped
 
-  mongodb:
-    image: mongo:6.0
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
+  # For production, use MongoDB Atlas instead of local MongoDB
+  # mongodb:
+  #   image: mongo:6.0
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongodb_data:/data/db
 
-volumes:
-  mongodb_data:
+# volumes:
+#   mongodb_data:
