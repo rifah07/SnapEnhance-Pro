@@ -8,6 +8,7 @@ from .auth import get_current_user
 from .image_processing import EFFECTS_MAP
 from datetime import datetime
 import cv2
+import numpy as np
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
@@ -30,47 +31,63 @@ async def process_image(
 ):
     """Process an image with the specified effect and store the result"""
     try:
-        # Save original file with user-specific filename
-        file_location = os.path.join(UPLOAD_DIR, f"{current_user.id}_{file.filename}")
-        with open(file_location, "wb+") as file_object:
-            file_object.write(await file.read())
+        # Read file contents
+        contents = await file.read()
+        nparr = np.frombuffer(contents, np.uint8)
         
-        # Generate processed filename and path
-        processed_filename = f"processed_{current_user.id}_{file.filename}"
+        # Decode image
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if img is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid image file format"
+            )
+        
+        # Generate filenames
+        unique_id = datetime.now().strftime("%Y%m%d%H%M%S")
+        original_filename = f"{current_user.id}_{unique_id}_{file.filename}"
+        processed_filename = f"processed_{current_user.id}_{unique_id}_{file.filename}"
+        
+        # Save paths
+        original_path = os.path.join(UPLOAD_DIR, original_filename)
         processed_path = os.path.join(PROCESSED_DIR, processed_filename)
         
-        # Apply the selected effect
-        if effect == EffectType.background_remove:
-            from PIL import Image
-            result = EFFECTS_MAP[effect](file_location)
-            if result:
-                result.save(processed_path)
-        else:
-            img = cv2.imread(file_location)
-            if img is None:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Invalid image file format"
-                )
-            processed_img = EFFECTS_MAP[effect](img)
-            cv2.imwrite(processed_path, processed_img)
+        # Save original file
+        with open(original_path, "wb") as f:
+            f.write(contents)
         
-        # Store processing record in database
+        # Apply effect
+        processed_img = EFFECTS_MAP[effect.value](img)
+        
+        # Handle grayscale images (convert to 3 channels if needed)
+        if len(processed_img.shape) == 2:
+            processed_img = cv2.cvtColor(processed_img, cv2.COLOR_GRAY2BGR)
+        
+        # Save processed image
+        cv2.imwrite(processed_path, processed_img)
+        
+        # Store processing record
         image_process = ImageProcess(
             user_id=current_user.id,
-            original_filename=f"{current_user.id}_{file.filename}",
+            original_filename=original_filename,
             processed_filename=processed_filename,
-            effect=effect.value
+            effect=effect.value,
+            created_at=datetime.utcnow()
         )
         image_processes_collection.insert_one(image_process.dict(by_alias=True))
         
         return {
-            "original_url": f"/static/uploads/{image_process.original_filename}",
-            "processed_url": f"/static/processed/{image_process.processed_filename}",
+            "original_url": f"/static/uploads/{original_filename}",
+            "processed_url": f"/static/processed/{processed_filename}",
             "effect": effect.value,
             "message": "Image processed successfully"
         }
-    
+        
+    except KeyError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid effect. Valid effects are: {list(EFFECTS_MAP.keys())}"
+        )
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -114,7 +131,7 @@ async def download_file(filename: str):
             )
         return FileResponse(
             file_path,
-            media_type="image/png",
+            media_type="image/jpeg",
             filename=filename
         )
     except Exception as e:
