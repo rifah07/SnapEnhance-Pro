@@ -26,3 +26,7 @@ app.include_router(images_router, prefix="/images", tags=["images"])
 @app.get("/")
 def read_root():
     return {"message": "SnapEnhance-Pro API"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
