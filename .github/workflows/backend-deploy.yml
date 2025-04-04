@@ -22,8 +22,10 @@ jobs:
         working-directory: ./backend
         run: docker build -t snapenhance-backend .
 
-      - name: Install Render CLI
-        run: curl -sf https://render.com/downloads/render-cli/install.sh | bash
+      - name: Install Render CLI properly
+        run: |
+          curl -fsSL https://cli.render.com/install.sh | bash
+          echo "$HOME/.render/bin" >> $GITHUB_PATH
 
       - name: Deploy to Render
         env:
