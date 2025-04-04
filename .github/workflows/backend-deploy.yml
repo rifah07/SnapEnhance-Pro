@@ -22,10 +22,23 @@ jobs:
         working-directory: ./backend
         run: docker build -t snapenhance-backend .
 
-      - name: Install Render CLI properly
+      - name: Install Render CLI with retries
         run: |
-          curl -fsSL https://cli.render.com/install.sh | bash
-          echo "$HOME/.render/bin" >> $GITHUB_PATH
+          for i in {1..5}; do
+            if curl -fsSL https://cli.render.com/install.sh | bash; then
+              echo "$HOME/.render/bin" >> $GITHUB_PATH
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying in 5 seconds..."
+            sleep 5
+          done
+          echo "::error::Failed to install Render CLI after 5 attempts"
+          exit 1
+
+      - name: Verify Render CLI installation
+        run: |
+          which render || (echo "::error::Render CLI not in PATH" && exit 1)
+          render --version
 
       - name: Deploy to Render
         env:
