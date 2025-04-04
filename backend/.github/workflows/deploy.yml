@@ -1,0 +1,68 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  DOCKER_IMAGE: snapenhance-pro-backend
+  PORT: 8000
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_DATABASE: snapenhance_test
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand(\"ping\").ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: docker build -t $DOCKER_IMAGE .
+      
+    - name: Run tests
+      env:
+        MONGO_URI: "mongodb://localhost:27017/snapenhance_test"
+        SECRET_KEY: "test-key-${{ github.run_id }}"
+        JWT_ALGORITHM: "HS256"
+        ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+        UPLOAD_FOLDER: "/backend/static/uploads"
+        PROCESSED_FOLDER: "/backend/static/processed"
+      run: |
+        docker run --network host \
+          -e MONGO_URI \
+          -e SECRET_KEY \
+          -e JWT_ALGORITHM \
+          -e ACCESS_TOKEN_EXPIRE_MINUTES \
+          -e UPLOAD_FOLDER \
+          -e PROCESSED_FOLDER \
+          $DOCKER_IMAGE sh -c "pytest"
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Render CLI
+        run: curl -sf https://render.com/downloads/render-cli/install.sh | bash
+      
+      - name: Deploy to Render
+        env:
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          render services deploy $RENDER_SERVICE_ID --api-key $RENDER_API_KEY
