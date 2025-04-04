@@ -5,10 +5,11 @@ on:
     branches: [master]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Verify Dockerfile
         run: |
@@ -18,31 +19,12 @@ jobs:
             exit 1
           fi
 
-      - name: Build Docker image
+      - name: Build Docker Image
         working-directory: ./backend
         run: docker build -t snapenhance-backend .
 
-      - name: Install Render CLI (Offline Fallback)
-        run: |
-          # Try online installation first
-          if curl -fsSL https://cli.render.com/install.sh 2>/dev/null | bash; then
-            echo "$HOME/.render/bin" >> $GITHUB_PATH
-          else
-            # Fallback to direct download if DNS fails
-            echo "::warning::Online install failed, trying direct download"
-            mkdir -p $HOME/.render/bin
-            curl -fL https://github.com/render-oss/cli/releases/latest/download/render-linux-amd64 -o $HOME/.render/bin/render
-            chmod +x $HOME/.render/bin/render
-            echo "$HOME/.render/bin" >> $GITHUB_PATH
-          fi
-
-      - name: Verify Render CLI
-        run: |
-          render --version || (echo "::error::Render CLI still not available" && exit 1)
-
       - name: Deploy to Render
-        env:
-          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-        run: |
-          render services deploy $RENDER_SERVICE_ID --api-key $RENDER_API_KEY
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
