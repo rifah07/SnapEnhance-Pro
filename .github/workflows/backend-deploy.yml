@@ -22,23 +22,23 @@ jobs:
         working-directory: ./backend
         run: docker build -t snapenhance-backend .
 
-      - name: Install Render CLI with retries
+      - name: Install Render CLI (Offline Fallback)
         run: |
-          for i in {1..5}; do
-            if curl -fsSL https://cli.render.com/install.sh | bash; then
-              echo "$HOME/.render/bin" >> $GITHUB_PATH
-              exit 0
-            fi
-            echo "Attempt $i failed, retrying in 5 seconds..."
-            sleep 5
-          done
-          echo "::error::Failed to install Render CLI after 5 attempts"
-          exit 1
+          # Try online installation first
+          if curl -fsSL https://cli.render.com/install.sh 2>/dev/null | bash; then
+            echo "$HOME/.render/bin" >> $GITHUB_PATH
+          else
+            # Fallback to direct download if DNS fails
+            echo "::warning::Online install failed, trying direct download"
+            mkdir -p $HOME/.render/bin
+            curl -fL https://github.com/render-oss/cli/releases/latest/download/render-linux-amd64 -o $HOME/.render/bin/render
+            chmod +x $HOME/.render/bin/render
+            echo "$HOME/.render/bin" >> $GITHUB_PATH
+          fi
 
-      - name: Verify Render CLI installation
+      - name: Verify Render CLI
         run: |
-          which render || (echo "::error::Render CLI not in PATH" && exit 1)
-          render --version
+          render --version || (echo "::error::Render CLI still not available" && exit 1)
 
       - name: Deploy to Render
         env:
