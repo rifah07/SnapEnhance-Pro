@@ -1,37 +1,33 @@
-name: Deploy to Render
+name: Deploy SnapEnhance-Pro Backend
 
 on:
   push:
     branches: [master]
 
 jobs:
-  test:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    services:
-      mongodb:
-        image: mongo:6.0
-        ports: [27017:27017]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Dockerfile
+        run: |
+          if [ ! -f backend/Dockerfile ]; then
+            echo "::error::Dockerfile not found in backend folder"
+            ls -la backend/
+            exit 1
+          fi
+
+      - name: Build Docker image
+        working-directory: ./backend
+        run: docker build -t snapenhance-backend .
+
+      - name: Install Render CLI
+        run: curl -sf https://render.com/downloads/render-cli/install.sh | bash
+
+      - name: Deploy to Render
         env:
-          MONGO_INITDB_DATABASE: testdb
-        options: >-
-          --health-cmd "mongosh --eval 'db.runCommand(\"ping\").ok'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-    - uses: actions/checkout@v4
-    - run: docker build -t backend .
-    - run: |
-        docker run --network host \
-          -e MONGO_URI=mongodb://localhost:27017/testdb \
-          -e SECRET_KEY=testkey \
-          backend sh -c "pytest || echo 'Tests failed but continuing deployment'"
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - run: curl -sf https://render.com/downloads/render-cli/install.sh | bash
-    - run: render services deploy ${{ secrets.RENDER_SERVICE_ID }} --api-key ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          render services deploy $RENDER_SERVICE_ID --api-key $RENDER_API_KEY
