@@ -6,20 +6,23 @@ ENV PYTHONUNBUFFERED=1 \
     UPLOAD_FOLDER=/backend/static/uploads \
     PROCESSED_FOLDER=/backend/static/processed
 
-RUN useradd -m appuser && \
-    mkdir -p /backend/static/{uploads,processed} && \
-    chown -R appuser:appuser /backend && \
+# Create directories and set permissions first
+RUN mkdir -p /backend/static/{uploads,processed} && \
     chmod -R 755 /backend/static
 
-WORKDIR /backend
-USER appuser
-
+# Install system dependencies first with retries
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
-    && apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
+
+# Create user and transfer ownership after installations
+RUN useradd -m appuser && \
+    chown -R appuser:appuser /backend
+
+WORKDIR /backend
+USER appuser
 
 COPY --chown=appuser:appuser requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
