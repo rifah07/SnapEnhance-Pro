@@ -1,12 +1,8 @@
 #!/bin/bash
-
-# Wait for MongoDB if needed
+# Wait for dependencies if needed
 # while ! nc -z $MONGO_HOST $MONGO_PORT; do sleep 1; done
 
-# Apply migrations
-# python -m app.migrate
-
-# Start server
+# Start Gunicorn with production settings
 exec gunicorn --bind 0.0.0.0:$PORT \
               --workers 4 \
               --worker-class uvicorn.workers.UvicornWorker \

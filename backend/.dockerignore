@@ -1,8 +1,8 @@
 .env
-__pycache__
-*.pyc
-*.pyo
-*.pyd
+**/__pycache__
+*.py[cod]
 .git
 .gitignore
 *.log
+*.swp
+.DS_Store

@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 from dotenv import load_dotenv
 from datetime import datetime
+import os
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
