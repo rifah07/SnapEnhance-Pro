@@ -2,10 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from .database import db
+from pathlib import Path
 from .auth import router as auth_router
 from .users import router as users_router
 from .images import router as images_router
-import os
 
 app = FastAPI()
 
@@ -17,7 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+static_dir = Path(__file__).parent.parent / "static"
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+#app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(users_router, prefix="/users", tags=["users"])
@@ -29,4 +32,4 @@ def read_root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    return {"status": "healthy", "database": "connected"}

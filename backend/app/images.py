@@ -6,7 +6,7 @@ from .models import ImageProcess, EffectType, UserInDB
 from .database import image_processes_collection
 from .auth import get_current_user
 from .image_processing import EFFECTS_MAP
-from datetime import datetime
+from pathlib import Path
 import cv2
 import numpy as np
 from dotenv import load_dotenv
@@ -15,11 +15,13 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 router = APIRouter()
 
-# Configure upload directories
-UPLOAD_DIR = os.getenv("UPLOAD_FOLDER", "static/uploads")
-PROCESSED_DIR = os.getenv("PROCESSED_FOLDER", "static/processed")
+BASE_DIR = Path(__file__).parent.parent
+UPLOAD_DIR = BASE_DIR / "static" / "uploads"
+PROCESSED_DIR = BASE_DIR / "static" / "processed"
 
-# Create directories if they don't exist
+#UPLOAD_DIR = os.getenv("UPLOAD_FOLDER", "backend/static/uploads")
+#PROCESSED_DIR = os.getenv("PROCESSED_FOLDER", "backend/static/processed")
+
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
@@ -31,7 +33,6 @@ async def process_image(
 ):
     """Process an image with the specified effect and store the result"""
     try:
-        # Read file contents
         contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         
@@ -59,7 +60,6 @@ async def process_image(
         # Apply effect
         processed_img = EFFECTS_MAP[effect.value](img)
         
-        # Handle grayscale images (convert to 3 channels if needed)
         if len(processed_img.shape) == 2:
             processed_img = cv2.cvtColor(processed_img, cv2.COLOR_GRAY2BGR)
         

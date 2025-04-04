@@ -1,19 +1,27 @@
 FROM python:3.9-slim
 
-WORKDIR /app
+WORKDIR /backend
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc python3-dev && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN mkdir -p /app/static/uploads /app/static/processed && \
-    chmod -R 777 /app/static/uploads /app/static/processed
+RUN mkdir -p /backend/static/uploads /backend/static/processed && \
+    chmod -R 755 /backend/static
 
-EXPOSE 8000
+ENV PYTHONUNBUFFERED=1 \
+    PORT=8000 \
+    PYTHONPATH=/backend
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.main:app"]
+EXPOSE $PORT
+
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]

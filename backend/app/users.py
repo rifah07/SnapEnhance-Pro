@@ -9,6 +9,7 @@ from .auth import (
     authenticate_user,
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
+
 from datetime import timedelta
 from typing import Annotated
 

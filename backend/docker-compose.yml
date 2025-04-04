@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - SECRET_KEY=${SECRET_KEY}
+      - UPLOAD_FOLDER=/backend/static/uploads
+      - PROCESSED_FOLDER=/backend/static/processed
+    volumes:
+      - ./static/uploads:/backend/static/uploads
+      - ./static/processed:/backend/static/processed
+
+  mongodb:
+    image: mongo:5.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
