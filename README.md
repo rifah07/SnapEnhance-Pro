@@ -7,4 +7,4 @@ Now run these in your terminal:
 3. python3 -c "import flask, cv2, rembg, gunicorn, dotenv; print('All packages installed successfully!')".
 4. To run backend app: FLASK_APP=$(pwd)/backend/app/__init__.py flask run or "export FLASK_APP=backend.app
 flask run"
-5. 
+5. uvicorn backend.app.main:app --reload- to run locally
