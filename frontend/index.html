@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SnapEnhance Pro - Image Processing</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -15,7 +16,7 @@
                 SnapEnhance Pro
             </div>
             <ul id="navLinks">
-                <!-- Dynamic navigation links will be inserted here -->
+                <!-- Dynamic navigation will be inserted here -->
             </ul>
         </nav>
     </header>
@@ -27,7 +28,7 @@
                 <p>Apply stunning effects to your photos with just one click</p>
                 
                 <div id="loggedOutContent" class="auth-prompt">
-                    <p>To start processing images, please log in or create an account</p>
+                    <p>Try our demo or log in to save your processed images</p>
                     <div class="auth-buttons">
                         <a href="login.html" class="btn-primary">
                             <i class="fas fa-sign-in-alt"></i> Login
@@ -35,6 +36,9 @@
                         <a href="register.html" class="btn-secondary">
                             <i class="fas fa-user-plus"></i> Register
                         </a>
+                        <button id="tryDemoBtn" class="btn-tertiary">
+                            <i class="fas fa-play"></i> Try Demo
+                        </button>
                     </div>
                 </div>
 
@@ -55,9 +59,10 @@
                         <h3>Choose an Effect:</h3>
                         <select id="effectSelect" class="effect-selector">
                             <option value="grayscale">Grayscale</option>
-                            <option value="invert">Invert</option>
+                            <option value="vignette">Vignette</option>
+                            <option value="invert">Invert Colors</option>
                             <option value="blur">Blur</option>
-                            <option value="edge-detect">Edge Detect</option>
+                            <option value="edge-detect">Edge Detection</option>
                             <option value="pencil-sketch">Pencil Sketch</option>
                             <option value="cartoonify">Cartoonify</option>
                             <option value="sharpen">Sharpen</option>
@@ -100,15 +105,17 @@
                             <button id="downloadBtn" class="btn-download" disabled>
                                 <i class="fas fa-download"></i> Download
                             </button>
-                            <button id="saveBtn" class="btn-save">
-                                <i class="fas fa-save"></i> Save to History
-                            </button>
                         </div>
                     </div>
+                </div>
+
+                <div id="demoContent" class="image-processing hidden">
+                    <!-- Same structure as loggedInContent but for demo -->
                 </div>
             </div>
         </section>
     </main>
+
 
     <footer>
         <div class="footer-content">
@@ -133,6 +140,6 @@
     </footer>
 
     <script src="js/auth.js"></script>
-    <script src="js/imageProcessor.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
