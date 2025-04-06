@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapEnhance Pro - Image Processing</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-camera-retro"></i>
+                SnapEnhance Pro
+            </div>
+            <ul id="navLinks">
+                <!-- Dynamic navigation links will be inserted here -->
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Transform Your Images with AI Magic</h1>
+                <p>Apply stunning effects to your photos with just one click</p>
+                
+                <div id="loggedOutContent" class="auth-prompt">
+                    <p>To start processing images, please log in or create an account</p>
+                    <div class="auth-buttons">
+                        <a href="login.html" class="btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                        <a href="register.html" class="btn-secondary">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </div>
+                </div>
+
+                <div id="loggedInContent" class="image-processing">
+                    <div class="upload-section">
+                        <div class="upload-box" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop your image here or</p>
+                            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                            <button class="btn-primary" id="selectImageBtn">
+                                <i class="fas fa-folder-open"></i> Select Image
+                            </button>
+                            <p class="file-info" id="fileInfo">No file selected</p>
+                        </div>
+                    </div>
+
+                    <div class="effects-section">
+                        <h3>Choose an Effect:</h3>
+                        <select id="effectSelect" class="effect-selector">
+                            <option value="grayscale">Grayscale</option>
+                            <option value="invert">Invert</option>
+                            <option value="blur">Blur</option>
+                            <option value="edge-detect">Edge Detect</option>
+                            <option value="pencil-sketch">Pencil Sketch</option>
+                            <option value="cartoonify">Cartoonify</option>
+                            <option value="sharpen">Sharpen</option>
+                            <option value="sepia">Sepia</option>
+                            <option value="watercolor">Watercolor</option>
+                            <option value="hdr">HDR</option>
+                            <option value="thermal">Thermal</option>
+                            <option value="night-vision">Night Vision</option>
+                            <option value="emboss">Emboss</option>
+                            <option value="mosaic">Mosaic</option>
+                            <option value="vignette">Vignette</option>
+                            <option value="halftone">Halftone</option>
+                            <option value="pop-art">Pop Art</option>
+                        </select>
+                        <button id="processBtn" class="btn-process" disabled>
+                            <i class="fas fa-magic"></i> Process Image
+                        </button>
+                    </div>
+
+                    <div class="results-section hidden" id="resultsSection">
+                        <h3>Your Results</h3>
+                        <div class="image-comparison">
+                            <div class="image-card">
+                                <div class="card-header">Original</div>
+                                <div class="image-container">
+                                    <img id="originalImage" src="" alt="Original Image">
+                                </div>
+                            </div>
+                            <div class="arrow-icon">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                            <div class="image-card">
+                                <div class="card-header">Processed</div>
+                                <div class="image-container">
+                                    <img id="processedImage" src="" alt="Processed Image">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="downloadBtn" class="btn-download" disabled>
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button id="saveBtn" class="btn-save">
+                                <i class="fas fa-save"></i> Save to History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>SnapEnhance Pro</h3>
+                <p>Advanced image processing at your fingertips</p>
+            </div>
+            <div class="footer-section">
+                <h3>Creators</h3>
+                <p>Farhana Akter Suci</p>
+                <p>Rifah Sajida Deya</p>
+            </div>
+            <div class="footer-section">
+                <h3>Institution</h3>
+                <p>Jagannath University, Dhaka</p>
+                <p>Department of Computer Science</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SnapEnhance Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/imageProcessor.js"></script>
+</body>
+</html>

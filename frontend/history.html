@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - SnapEnhance Pro</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/history.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-camera-retro"></i>
+                SnapEnhance Pro
+            </div>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="history.html" class="active"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="history-section">
+            <h1><i class="fas fa-clock"></i> Your Processing History</h1>
+            
+            <div class="history-controls">
+                <div class="filter-controls">
+                    <select id="filterSelect">
+                        <option value="all">All Effects</option>
+                        <option value="grayscale">Grayscale</option>
+                        <option value="vignette">Vignette</option>
+                        <option value="invert">Invert</option>
+                        <option value="blur">Blur</option>
+                        <option value="edge-detect">Edge Detect</option>
+                                            <option value="pencil-sketch">Pencil Sketch</option>
+                    <option value="cartoonify">Cartoonify</option>
+                    <option value="sharpen">Sharpen</option>
+                    <option value="sepia">Sepia</option>
+                    <option value="watercolor">Watercolor</option>
+                    <option value="hdr">HDR</option>
+                    <option value="thermal">Thermal</option>
+                    <option value="night-vision">Night Vision</option>
+                    <option value="emboss">Emboss</option>
+                    <option value="mosaic">Mosaic</option>
+                    <option value="vignette">Vignette</option>
+                    <option value="halftone">Halftone</option>
+                    <option value="pop-art">Pop Art</option>
+                    </select>
+                    <button id="applyFilter" class="btn-primary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+            
+            <div class="history-stats">
+                <div class="stat-card">
+                    <i class="fas fa-images"></i>
+                    <span id="totalCount">0</span>
+                    <p>Total Images</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-magic"></i>
+                    <span id="effectCount">0</span>
+                    <p>Effects Used</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-day"></i>
+                    <span id="recentCount">0</span>
+                    <p>Today's Edits</p>
+                </div>
+            </div>
+            
+            <div class="history-grid" id="historyGrid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading your history...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>SnapEnhance Pro</h3>
+                <p>Advanced image processing at your fingertips</p>
+            </div>
+            <div class="footer-section">
+                <h3>Creators</h3>
+                <p>Farhana Akter Suci</p>
+                <p>Rifah Sajida Deya</p>
+            </div>
+            <div class="footer-section">
+                <h3>Institution</h3>
+                <p>Jagannath University, Dhaka</p>
+                <p>Department of Computer Science</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SnapEnhance Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/history.js"></script>
+</body>
+</html>
