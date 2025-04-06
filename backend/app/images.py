@@ -1,7 +1,7 @@
 import os
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from .models import ImageProcess, EffectType, UserInDB
 from .database import image_processes_collection
 from .auth import get_current_user
@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 from dotenv import load_dotenv
 from datetime import datetime
-import os
+import tempfile
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
@@ -21,12 +21,10 @@ BASE_DIR = Path(__file__).parent.parent
 UPLOAD_DIR = BASE_DIR / "static" / "uploads"
 PROCESSED_DIR = BASE_DIR / "static" / "processed"
 
-#UPLOAD_DIR = os.getenv("UPLOAD_FOLDER", "backend/static/uploads")
-#PROCESSED_DIR = os.getenv("PROCESSED_FOLDER", "backend/static/processed")
-
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
+# Endpoints with authentication
 @router.post("/process")
 async def process_image(
     current_user: Annotated[UserInDB, Depends(get_current_user)],
@@ -84,6 +82,61 @@ async def process_image(
             "effect": effect.value,
             "message": "Image processed successfully"
         }
+        
+    except KeyError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid effect. Valid effects are: {list(EFFECTS_MAP.keys())}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error processing image: {str(e)}"
+        )
+
+# Endpoint for processing without login (no storage)
+@router.post("/process/temp")
+async def process_image_temp(
+    file: UploadFile = File(...),
+    effect: EffectType = Form(...)
+):
+    """Process an image with the specified effect without storing it (no login required)"""
+    try:
+        contents = await file.read()
+        nparr = np.frombuffer(contents, np.uint8)
+        
+        # Decode image
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if img is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid image file format"
+            )
+        
+        # Apply effect
+        processed_img = EFFECTS_MAP[effect.value](img)
+        
+        if len(processed_img.shape) == 2:
+            processed_img = cv2.cvtColor(processed_img, cv2.COLOR_GRAY2BGR)
+        
+        # Create temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
+            temp_path = tmp_file.name
+            cv2.imwrite(temp_path, processed_img)
+        
+        # Read the temp file and then delete it
+        with open(temp_path, "rb") as f:
+            processed_image_bytes = f.read()
+        os.unlink(temp_path)
+        
+        # Return the processed image directly in the response
+        return Response(
+            content=processed_image_bytes,
+            media_type="image/jpeg",
+            headers={
+                "Content-Disposition": f"attachment; filename=processed_{file.filename}"
+            }
+        )
         
     except KeyError:
         raise HTTPException(
