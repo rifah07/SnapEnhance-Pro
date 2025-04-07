@@ -1,52 +1,48 @@
 const API_BASE_URL = 'https://snapenhance-pro-backend.onrender.com';
 
-// Check authentication state
 function checkAuth() {
     const token = localStorage.getItem('token');
     const currentPage = window.location.pathname.split('/').pop();
     
     if (token) {
-        // User is logged in
         if (currentPage === 'login.html' || currentPage === 'register.html') {
             window.location.href = 'profile.html';
         }
+        updateNav();
     } else {
-        // User is not logged in
         if (currentPage === 'profile.html' || currentPage === 'history.html') {
             window.location.href = 'login.html';
         }
+        updateNav();
     }
 }
 
-// Update navigation based on auth state
 function updateNav() {
     const token = localStorage.getItem('token');
-    const navLinks = document.querySelectorAll('nav ul li a');
+    const navLinks = document.getElementById('navLinks');
+    
+    if (!navLinks) return;
     
     if (token) {
-        // Hide login/register, show profile/logout
-        navLinks.forEach(link => {
-            if (link.textContent === 'Login' || link.textContent === 'Register') {
-                link.parentElement.style.display = 'none';
-            }
-            if (link.textContent === 'Profile' || link.textContent === 'History' || link.id === 'logoutBtn') {
-                link.parentElement.style.display = 'list-item';
-            }
-        });
+        navLinks.innerHTML = `
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="history.html"><i class="fas fa-history"></i> History</a></li>
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+            <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        `;
+        
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
     } else {
-        // Show login/register, hide profile/logout
-        navLinks.forEach(link => {
-            if (link.textContent === 'Login' || link.textContent === 'Register') {
-                link.parentElement.style.display = 'list-item';
-            }
-            if (link.textContent === 'Profile' || link.textContent === 'History' || link.id === 'logoutBtn') {
-                link.parentElement.style.display = 'none';
-            }
-        });
+        navLinks.innerHTML = `
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        `;
     }
 }
 
-// Register function
 async function register(username, email, password) {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/register/`, {
@@ -71,11 +67,10 @@ async function register(username, email, password) {
         window.location.href = 'profile.html';
     } catch (error) {
         console.error('Registration error:', error);
-        alert(error.message);
+        showToast(error.message, 'error');
     }
 }
 
-// Login function
 async function login(username, password) {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/token`, {
@@ -88,7 +83,7 @@ async function login(username, password) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || 'Login failed');
+            throw new Error(errorData.detail || 'Invalid username or password');
         }
 
         const data = await response.json();
@@ -96,17 +91,15 @@ async function login(username, password) {
         window.location.href = 'profile.html';
     } catch (error) {
         console.error('Login error:', error);
-        alert(error.message);
+        showToast(error.message, 'error');
     }
 }
 
-// Logout function
 function logout() {
     localStorage.removeItem('token');
     window.location.href = 'index.html';
 }
 
-// Get user profile
 async function getProfile() {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -121,6 +114,7 @@ async function getProfile() {
         if (!response.ok) {
             if (response.status === 401) {
                 logout();
+                throw new Error('Session expired. Please login again.');
             }
             throw new Error('Failed to fetch profile');
         }
@@ -129,10 +123,111 @@ async function getProfile() {
         displayProfile(user);
     } catch (error) {
         console.error('Profile error:', error);
+        showToast(error.message, 'error');
     }
 }
 
-// Display profile
+async function getImageHistory() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    
+    const historyContainer = document.getElementById('imageHistory');
+    if (!historyContainer) return;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/images/history`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            if (response.status === 401) {
+                logout();
+                throw new Error('Session expired. Please login again.');
+            }
+            throw new Error('Failed to fetch image history');
+        }
+        
+        const history = await response.json();
+        displayImageHistory(history);
+    } catch (error) {
+        console.error('History error:', error);
+        showToast(error.message, 'error');
+    }
+}
+
+function displayImageHistory(history) {
+    const historyContainer = document.getElementById('imageHistory');
+    if (!historyContainer) return;
+    
+    if (history.length === 0) {
+        historyContainer.innerHTML = '<p class="no-history">No image processing history found. Process some images first!</p>';
+        return;
+    }
+    
+    let html = '<div class="history-grid">';
+    
+    history.forEach(item => {
+        html += `
+            <div class="history-item">
+                <div class="history-images">
+                    <div class="history-image">
+                        <img src="${API_BASE_URL}${item.original_url}" alt="Original Image">
+                        <span>Original</span>
+                    </div>
+                    <div class="history-image">
+                        <img src="${API_BASE_URL}${item.processed_url}" alt="Processed Image">
+                        <span>${item.effect}</span>
+                    </div>
+                </div>
+                <div class="history-info">
+                    <p><strong>Date:</strong> ${new Date(item.created_at).toLocaleString()}</p>
+                    <p><strong>Effect:</strong> ${item.effect}</p>
+                    <button class="btn-download history-download" data-url="${API_BASE_URL}${item.processed_url}">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    historyContainer.innerHTML = html;
+    
+    // Add event listeners to download buttons
+    const downloadButtons = document.querySelectorAll('.history-download');
+    downloadButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+            if (url) {
+                downloadImage(url);
+            }
+        });
+    });
+}
+
+function downloadImage(url) {
+    try {
+        const a = document.createElement('a');
+        a.href = url;
+        
+        // Extract filename from URL
+        const urlParts = url.split('/');
+        const filename = urlParts[urlParts.length - 1];
+        
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        showToast('Download started!');
+    } catch (error) {
+        console.error('Download error:', error);
+        showToast('Failed to download image', 'error');
+    }
+}
+
 function displayProfile(user) {
     const profileInfo = document.getElementById('profileInfo');
     if (!profileInfo) return;
@@ -144,12 +239,23 @@ function displayProfile(user) {
     `;
 }
 
-// Event listeners
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => document.body.removeChild(toast), 300);
+    }, 3000);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
     updateNav();
     
-    // Login form
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
@@ -160,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Register form
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
@@ -172,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Logout button
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function(e) {
@@ -181,8 +285,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Load profile if on profile page
     if (window.location.pathname.includes('profile.html')) {
         getProfile();
+    }
+    
+    if (window.location.pathname.includes('history.html')) {
+        getImageHistory();
     }
 });

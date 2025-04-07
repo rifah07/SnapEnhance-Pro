@@ -7,6 +7,30 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        .toast.success {
+            background-color: #51cf66;
+        }
+        .toast.error {
+            background-color: #ff6b6b;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -16,7 +40,6 @@
                 SnapEnhance Pro
             </div>
             <ul id="navLinks">
-                <!-- Dynamic navigation will be inserted here -->
             </ul>
         </nav>
     </header>
@@ -28,7 +51,7 @@
                 <p>Apply stunning effects to your photos with just one click</p>
                 
                 <div id="loggedOutContent" class="auth-prompt">
-                    <p>Try our demo or log in to save your processed images</p>
+                    <p>Log in to process images</p>
                     <div class="auth-buttons">
                         <a href="login.html" class="btn-primary">
                             <i class="fas fa-sign-in-alt"></i> Login
@@ -36,9 +59,6 @@
                         <a href="register.html" class="btn-secondary">
                             <i class="fas fa-user-plus"></i> Register
                         </a>
-                        <button id="tryDemoBtn" class="btn-tertiary">
-                            <i class="fas fa-play"></i> Try Demo
-                        </button>
                     </div>
                 </div>
 
@@ -49,7 +69,7 @@
                             <p>Drag & drop your image here or</p>
                             <input type="file" id="imageInput" accept="image/*" style="display: none;">
                             <button class="btn-primary" id="selectImageBtn">
-                                <i class="fas fa-folder-open"></i> Select Image
+                                <i class="fas fa-folder-open" style="color: white;"></i> Select Image
                             </button>
                             <p class="file-info" id="fileInfo">No file selected</p>
                         </div>
@@ -73,7 +93,6 @@
                             <option value="night-vision">Night Vision</option>
                             <option value="emboss">Emboss</option>
                             <option value="mosaic">Mosaic</option>
-                            <option value="vignette">Vignette</option>
                             <option value="halftone">Halftone</option>
                             <option value="pop-art">Pop Art</option>
                         </select>
@@ -103,19 +122,14 @@
                         </div>
                         <div class="action-buttons">
                             <button id="downloadBtn" class="btn-download" disabled>
-                                <i class="fas fa-download"></i> Download
+                             View Full Image
                             </button>
                         </div>
                     </div>
                 </div>
-
-                <div id="demoContent" class="image-processing hidden">
-                    <!-- Same structure as loggedInContent but for demo -->
-                </div>
             </div>
         </section>
     </main>
-
 
     <footer>
         <div class="footer-content">

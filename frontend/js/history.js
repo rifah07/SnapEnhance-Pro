@@ -103,7 +103,6 @@ async function verifyImageAvailability(historyItems) {
     try {
         const verificationPromises = historyItems.map(async (item) => {
             try {
-                // Clean and encode URLs
                 const originalUrl = cleanUrl(`${API_BASE_URL}${item.original_url}`);
                 const processedUrl = cleanUrl(`${API_BASE_URL}${item.processed_url}`);
                 
@@ -144,14 +143,12 @@ async function verifyImageAvailability(historyItems) {
     }
 }
 
-// Clean and normalize URLs
 function cleanUrl(url) {
     return url.replace(/\s/g, '')
              .replace(/[。，]/g, '.')
              .replace(/#/g, '');
 }
 
-// Check if an image URL exists
 async function checkImageExists(url) {
     try {
         const response = await fetch(url, { 
@@ -164,7 +161,6 @@ async function checkImageExists(url) {
     }
 }
 
-// Display history items
 function displayHistory(historyItems) {
     const historyGrid = document.getElementById('historyGrid');
     if (!historyGrid) return;
@@ -182,7 +178,6 @@ function displayHistory(historyItems) {
     historyGrid.innerHTML = historyItems.map(item => createHistoryItem(item)).join('');
 }
 
-// Update statistics
 function updateStats(historyItems) {
     const totalCount = historyItems.length;
     const uniqueEffects = [...new Set(historyItems.map(item => item.effect))].length;
@@ -196,11 +191,9 @@ function updateStats(historyItems) {
     document.getElementById('recentCount').textContent = todayCount;
 }
 
-// Create HTML for a single history item
 function createHistoryItem(item) {
     const date = new Date(item.created_at).toLocaleString();
     
-    // Determine image URLs
     const originalUrl = item.originalExists ? 
         cleanUrl(`${API_BASE_URL}${item.original_url}`) : 
         createPlaceholderSVG('Original Not Available');
