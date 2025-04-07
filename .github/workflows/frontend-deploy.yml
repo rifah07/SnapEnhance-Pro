@@ -1,4 +1,4 @@
-name: Deploy to Vercel
+name: Deploy SnapEnhance-Pro Frontend in Vercel
 on:
   push:
     branches: [master]
