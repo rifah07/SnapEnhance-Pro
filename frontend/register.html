@@ -1,68 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - SnapEnhance Pro</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
     <header>
-        <nav>
-            <div class="logo">
-                <i class="fas fa-camera-retro"></i>
-                SnapEnhance Pro
-            </div>
-            <ul id="navLinks">
-            </ul>
-        </nav>
+      <nav>
+        <div class="logo">
+          <i class="fas fa-camera-retro"></i>
+          SnapEnhance Pro
+        </div>
+        <ul id="navLinks"></ul>
+      </nav>
     </header>
 
     <main class="container auth-container">
-        <section class="auth-form">
-            <h1>Create an Account</h1>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="regUsername">Username</label>
-                    <input type="text" id="regUsername" required>
-                </div>
-                <div class="form-group">
-                    <label for="regEmail">Email</label>
-                    <input type="email" id="regEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="regPassword">Password</label>
-                    <input type="password" id="regPassword" required>
-                </div>
-                <button type="submit" class="btn">Register</button>
-            </form>
-            <p>Already have an account? <a href="login.html">Login here</a></p>
-        </section>
+      <section class="auth-form">
+        <h1>Create an Account</h1>
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" required />
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" required />
+          </div>
+          <div style="display: flex; justify-content: center">
+            <button type="submit" class="btn" style="width: 440px">
+              Register
+            </button>
+          </div>
+        </form>
+        <div style="display: flex; justify-content: center">
+          <p>Already have an account? <a href="login.html">Login here</a></p>
+        </div>
+      </section>
     </main>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>SnapEnhance Pro</h3>
-                <p>Advanced image processing at your fingertips</p>
-            </div>
-            <div class="footer-section">
-                <h3>Creators</h3>
-                <p>Farhana Akter Suci</p>
-                <p>Rifah Sajida Deya</p>
-            </div>
-            <div class="footer-section">
-                <h3>Institution</h3>
-                <p>Jagannath University, Dhaka</p>
-                <p>Department of Computer Science</p>
-            </div>
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>SnapEnhance Pro</h3>
+          <p>Advanced image processing at your fingertips</p>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 SnapEnhance Pro. All rights reserved.</p>
+        <div class="footer-section">
+          <h3>Creators</h3>
+          <p>Farhana Akter Suci</p>
+          <p>Rifah Sajida Deya</p>
         </div>
+        <div class="footer-section">
+          <h3>Institution</h3>
+          <p>Jagannath University, Dhaka</p>
+          <p>Department of Computer Science</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 SnapEnhance Pro. All rights reserved.</p>
+      </div>
     </footer>
 
     <script src="js/auth.js"></script>
-</body>
+  </body>
 </html>

@@ -1,107 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile - SnapEnhance Pro</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
-        /* Profile-specific styles */
+      /* Profile-specific styles */
+      .profile-section {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+      }
+
+      .profile-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .profile-section h1 {
+        color: #333;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        font-weight: 600;
+        text-align: center;
+        position: relative;
+      }
+
+      .profile-section h1::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -2px;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      }
+
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #f5f5f5;
+        margin: 0 auto 2rem;
+        border: 4px solid white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .profile-avatar i {
+        font-size: 4rem;
+        color: #ccc;
+      }
+
+      .profile-info {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+      }
+
+      .profile-info p {
+        margin: 0;
+        font-size: 1rem;
+        color: #555;
+        display: flex;
+        align-items: center;
+        padding: 0.2rem 0;
+      }
+
+      .profile-info strong {
+        color: #333;
+        display: inline-block;
+        width: 120px;
+        font-weight: 600;
+      }
+
+      .divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #f0f0f0, transparent);
+        margin: 2rem 0;
+      }
+
+      .app-info {
+        text-align: center;
+        padding: 1rem 0;
+      }
+
+      .app-info h2 {
+        color: #2575fc;
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+      }
+
+      .app-info p {
+        color: #666;
+        font-size: 1.1rem;
+      }
+
+      /* Member tag */
+      .member-tag {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .member-tag i {
+        margin-right: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
         .profile-section {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .profile-section h1 {
-            color: #333;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .profile-info {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .profile-info p {
-            margin: 0;
-            font-size: 1.1rem;
-            color: #555;
+          padding: 1.5rem;
+          margin: 1rem;
         }
 
         .profile-info strong {
-            color: #333;
-            display: inline-block;
-            width: 120px;
+          width: 100px;
         }
-
-        .divider {
-            height: 1px;
-            background: #f0f0f0;
-            margin: 2rem 0;
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <nav>
-            <div class="logo">
-                <i class="fas fa-camera-retro"></i>
-                SnapEnhance Pro
-            </div>
-            <ul id="navLinks">
-            </ul>
-        </nav>
+      <nav>
+        <div class="logo">
+          <i class="fas fa-camera-retro"></i>
+          SnapEnhance Pro
+        </div>
+        <ul id="navLinks"></ul>
+      </nav>
     </header>
-
     <main class="container">
-        <section class="profile-section">
-            <h1>Your Profile</h1>
-            <div class="profile-info" id="profileInfo">
-                <p><strong>Username:</strong> anna</p>
-                <p><strong>Email:</strong> anna@gmail.com</p>
-                <p><strong>Member since:</strong> 4/7/2025</p>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <div class="app-info">
-                <h2>SnapEnhance Pro</h2>
-                <p>Advanced image processing at your fingertips</p>
-            </div>
-        </section>
+      <section class="profile-section">
+        <div class="profile-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+
+        <h1>Your Profile</h1>
+
+        <div class="member-tag" id="memberTag">
+          <i class="fas fa-gem"></i>
+          <span>Member since 1/7/2025</span>
+        </div>
+
+        <div class="profile-info" id="profileInfo">
+          <p><strong>Username:</strong> anna</p>
+          <p><strong>Email:</strong> anna@gmail.com</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="app-info">
+          <h2>SnapEnhance Pro</h2>
+          <p>Advanced image processing at your fingertips</p>
+        </div>
+      </section>
     </main>
-
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>SnapEnhance Pro</h3>
-                <p>Advanced image processing at your fingertips</p>
-            </div>
-            <div class="footer-section">
-                <h3>Creators</h3>
-                <p>Farhana Akter Suci</p>
-                <p>Rifah Sajida Deya</p>
-            </div>
-            <div class="footer-section">
-                <h3>Institution</h3>
-                <p>Jagannath University, Dhaka</p>
-                <p>Department of Computer Science</p>
-            </div>
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>SnapEnhance Pro</h3>
+          <p>Advanced image processing at your fingertips</p>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 SnapEnhance Pro. All rights reserved.</p>
+        <div class="footer-section">
+          <h3>Creators</h3>
+          <p>Farhana Akter Suci</p>
+          <p>Rifah Sajida Deya</p>
         </div>
+        <div class="footer-section">
+          <h3>Institution</h3>
+          <p>Jagannath University, Dhaka</p>
+          <p>Department of Computer Science</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 SnapEnhance Pro. All rights reserved.</p>
+      </div>
     </footer>
-
     <script src="js/auth.js"></script>
-</body>
+  </body>
 </html>
