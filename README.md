@@ -9,7 +9,7 @@
 SnapEnhance is a cloud-native, AI-powered image processing web application that combines machine learning, containerization, and CI/CD automation to deliver real-time image transformation features. Users can upload images and apply AI-based effects through a seamless and scalable interface.
 
 ## 🛠 Tech Stack
-- **Backend:** Flask (Python)
+- **Backend:** FastAPI (Python)
 - **Frontend:** HTML, CSS, JavaScript
 - **Cloud:** Render (Backend), Vercel (Frontend)
 - **Containerization:** Docker
@@ -34,7 +34,7 @@ SnapEnhance is a cloud-native, AI-powered image processing web application that 
   - Basic authentication for account-based access
 
 ## 📌 Implementation Plan
-1. **Backend API with Flask**
+1. **Backend API with FastAPI**
    - Image upload, user auth, image processing features
 2. **Dockerize Backend**
    - Build, run, and manage containers
